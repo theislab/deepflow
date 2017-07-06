@@ -3,8 +3,15 @@ This code contains the neural network implementation from the nature communicati
 
 ## Running the code.
 To reproduce the results from the publication, create the records with:
+
 '''
 sh generate_record_files.sh
+'''
+
+Run the neural network training & prediction:
+
+'''
+python3.4 run.py
 '''
 
 #System Requirements
