@@ -1,0 +1,28 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+_DualDownsampleFactory	run.py	/^    def _DualDownsampleFactory(data, ch_3x3):$/;"	f	function:get_dualpath_model
+_DualFactory	run.py	/^    def _DualFactory(data, ch_1x1, ch_3x3):$/;"	f	function:get_dualpath_model
+_SimpleConvFactory	run.py	/^    def _SimpleConvFactory(data, num_filter, kernel, stride=(1,1), pad=(0, 0), act_type="relu"):$/;"	f	function:get_dualpath_model
+_file_len	run.py	/^def _file_len(fname):$/;"	f
+batch_size	run.py	/^batch_size = 128$/;"	v
+factor_epoch	run.py	/^factor_epoch = 85$/;"	v
+get_dualpath_model	run.py	/^def get_dualpath_model():$/;"	f
+get_test_iter	run.py	/^def get_test_iter():$/;"	f
+get_train_iter	run.py	/^def get_train_iter():$/;"	f
+gpus	run.py	/^gpus = [mx.gpu(i) for i in [num_gpus]]$/;"	v
+kv	run.py	/^kv = mx.kvstore.create('local_allreduce_device')$/;"	v
+learning_rate	run.py	/^learning_rate = 0.01$/;"	v
+logger	run.py	/^logger = logging.getLogger()$/;"	v
+lr_factor	run.py	/^lr_factor = 0.1$/;"	v
+make_sure_path_exists	run.py	/^def make_sure_path_exists(path):$/;"	f
+model_prefix	run.py	/^model_prefix = 'model\/dual'$/;"	v
+momentum	run.py	/^momentum = 0.9$/;"	v
+num_epoch	run.py	/^num_epoch = 100$/;"	v
+num_gpus	run.py	/^num_gpus = 1$/;"	v
+predict	run.py	/^def predict(): $/;"	f
+train_ifc	run.py	/^def train_ifc():$/;"	f
+weight_decay	run.py	/^weight_decay = 0.0005$/;"	v
