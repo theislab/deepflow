@@ -1,4 +1,5 @@
-# Reconstructing cell cycle and disease progression using deep learning
+# Reconstructing cell cycle and disease progression
+using deep learning
 This code contains the neural network implementation from the nature communication manuscript NCOMMS-16-25447A.
 
 ## Running the code.
