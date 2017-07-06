@@ -2,7 +2,7 @@
 This code contains the neural network implementation from the nature communication manuscript NCOMMS-16-25447A.
 
 ## Running the code.
-To reproduce the results from the publication, create the records with:
+To reproduce the results from the publication, change the PATH2MXNET variable in generate_record_files.sh to your mxnet home folder and run:
 
 ```
 sh generate_record_files.sh
