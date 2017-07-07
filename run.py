@@ -180,7 +180,8 @@ def predict():
    """
    model = mx.model.FeedForward.load(model_prefix, num_epoch, ctx = gpus)  
    internals = get_dualpath_model().get_internals()
-   print(internals)
+   fea_symbol2 = internals["flatten1_output"]
+   fea_symbol1 = internals["softmax_output"]
    group = mx.symbol.Group([fea_symbol1, fea_symbol2])
    feature_extractor = mx.model.FeedForward(ctx=gpus, symbol=group,
                                          arg_params=model.arg_params,
