@@ -16,7 +16,7 @@ gpus = [mx.gpu(i) for i in [num_gpus]]
 kv = mx.kvstore.create('local_allreduce_device')
 
 #define hyperparameters
-num_epoch = 100
+num_epoch = 1
 batch_size = 128
 learning_rate = 0.01
 momentum = 0.9
@@ -34,54 +34,52 @@ def make_sure_path_exists(path):
         if exception.errno != errno.EEXIST:
             raise
 
-def get_dualpath_model():
-    """Define model architecture
-    """
+"""Define model architecture
+"""
 
-    def _SimpleConvFactory(data, num_filter, kernel, stride=(1,1), pad=(0, 0), act_type="relu"):
-        conv = mx.symbol.Convolution(data=data, num_filter=num_filter, kernel=kernel, stride=stride, pad=pad)
-        bn = mx.symbol.BatchNorm(data=conv)
-        act = mx.symbol.Activation(data = bn, act_type=act_type)
-        return act
+def _SimpleConvFactory(data, num_filter, kernel, stride=(1,1), pad=(0, 0), act_type="relu"):
+    conv = mx.symbol.Convolution(data=data, num_filter=num_filter, kernel=kernel, stride=stride, pad=pad)
+    bn = mx.symbol.BatchNorm(data=conv)
+    act = mx.symbol.Activation(data = bn, act_type=act_type)
+    return act
 
-    def _DualDownsampleFactory(data, ch_3x3):
-        # conv 3x3
-        conv = _SimpleConvFactory(data=data, kernel=(3, 3), stride=(2, 2), num_filter=ch_3x3, pad=(1, 1))
-        # pool
-        pool = mx.symbol.Pooling(data=data, kernel=(3, 3), stride=(2, 2),pad=(1, 1), pool_type='max')
-        # concat
-        concat = mx.symbol.Concat(*[conv, pool])
-        return concat
+def _DualDownsampleFactory(data, ch_3x3):
+    # conv 3x3
+    conv = _SimpleConvFactory(data=data, kernel=(3, 3), stride=(2, 2), num_filter=ch_3x3, pad=(1, 1))
+    # pool
+    pool = mx.symbol.Pooling(data=data, kernel=(3, 3), stride=(2, 2),pad=(1, 1), pool_type='max')
+    # concat
+    concat = mx.symbol.Concat(*[conv, pool])
+    return concat
 
-    def _DualFactory(data, ch_1x1, ch_3x3):
-        # 1x1
-        conv1x1 = _SimpleConvFactory(data=data, kernel=(1, 1), pad=(0, 0), num_filter=ch_1x1)
-        # 3x3
-        conv3x3 = _SimpleConvFactory(data=data, kernel=(3, 3), pad=(1, 1), num_filter=ch_3x3)
-        #concat
-        concat = mx.symbol.Concat(*[conv1x1, conv3x3])
-        return concat
+def _DualFactory(data, ch_1x1, ch_3x3):
+    # 1x1
+    conv1x1 = _SimpleConvFactory(data=data, kernel=(1, 1), pad=(0, 0), num_filter=ch_1x1)
+    # 3x3
+    conv3x3 = _SimpleConvFactory(data=data, kernel=(3, 3), pad=(1, 1), num_filter=ch_3x3)
+    #concat
+    concat = mx.symbol.Concat(*[conv1x1, conv3x3])
+    return concat
 
-    data = mx.symbol.Variable(name="data")
-    conv1 = _SimpleConvFactory(data=data, kernel=(3,3),  pad=(1,1), num_filter=96, act_type="relu")
-    in3a = _DualFactory(conv1, 32, 32)
-    in3b = _DualFactory(in3a, 32, 48)
-    in3c = _DualDownsampleFactory(in3b, 80)
-    in4a = _DualFactory(in3c, 112, 48)
-    in4b = _DualFactory(in4a, 96, 64)
-    in4c = _DualFactory(in4b, 80, 80)
-    in4d = _DualFactory(in4c, 48, 96)
-    in4e = _DualDownsampleFactory(in4d, 96)
-    in5a = _DualFactory(in4e, 176, 160)
-    in5b = _DualFactory(in5a, 176, 160)
-    in6a = _DualDownsampleFactory(in5b, 96)
-    in6b = _DualFactory(in6a, 176, 160)
-    in6c = _DualFactory(in6b, 176, 160)
-    pool = mx.symbol.Pooling(data=in6c, pool_type="avg", kernel=(8,8), name="global_avg")
-    flatten = mx.symbol.Flatten(data=pool)
-    fc = mx.symbol.FullyConnected(data=flatten, num_hidden=7)
-    softmax = mx.symbol.Softmax(data=fc, name = "softmax")
-    return softmax
+data = mx.symbol.Variable(name="data")
+conv1 = _SimpleConvFactory(data=data, kernel=(3,3),  pad=(1,1), num_filter=96, act_type="relu")
+in3a = _DualFactory(conv1, 32, 32)
+in3b = _DualFactory(in3a, 32, 48)
+in3c = _DualDownsampleFactory(in3b, 80)
+in4a = _DualFactory(in3c, 112, 48)
+in4b = _DualFactory(in4a, 96, 64)
+in4c = _DualFactory(in4b, 80, 80)
+in4d = _DualFactory(in4c, 48, 96)
+in4e = _DualDownsampleFactory(in4d, 96)
+in5a = _DualFactory(in4e, 176, 160)
+in5b = _DualFactory(in5a, 176, 160)
+in6a = _DualDownsampleFactory(in5b, 96)
+in6b = _DualFactory(in6a, 176, 160)
+in6c = _DualFactory(in6b, 176, 160)
+pool = mx.symbol.Pooling(data=in6c, pool_type="avg", kernel=(8,8), name="global_avg")
+flatten = mx.symbol.Flatten(data=pool)
+fc = mx.symbol.FullyConnected(data=flatten, num_hidden=7)
+softmax = mx.symbol.Softmax(data=fc, name = "softmax")
 
 def get_train_iter():
     """ creates train data iterator
@@ -129,7 +127,7 @@ def train_ifc():
     # create new model with params
     model = mx.mod.Module(
         context       = gpus,
-        symbol        = get_dualpath_model()
+        symbol        = softmax
     )
 
     #define Xavier initialization
@@ -152,7 +150,7 @@ def train_ifc():
             }
     #optional plot routine for network architecture
     '''
-    digraph = mx.viz.plot_network(get_dualpath_model(), shape={'data':(batch_size, 3, 64, 64)}, node_attrs={"fixedsize":"false"})
+    digraph = mx.viz.plot_network(softmax, shape={'data':(batch_size, 3, 64, 64)}, node_attrs={"fixedsize":"false"})
     digraph.view()
     '''
     #define checkpoint which saves model at the end of an epoch
@@ -179,8 +177,8 @@ def predict():
    """ prediction routine which saves testset features and softmax outputs to disc
    """
    model = mx.model.FeedForward.load(model_prefix, num_epoch, ctx = gpus)  
-   internals = get_dualpath_model().get_internals()
-   fea_symbol2 = internals["flatten1_output"]
+   internals = softmax.get_internals()
+   fea_symbol2 = internals["flatten0_output"]
    fea_symbol1 = internals["softmax_output"]
    group = mx.symbol.Group([fea_symbol1, fea_symbol2])
    feature_extractor = mx.model.FeedForward(ctx=gpus, symbol=group,
