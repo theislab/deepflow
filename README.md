@@ -1,5 +1,6 @@
 # Reconstructing cell cycle and disease progression using deep learning
-This code contains the neural network implementation from the nature communication publication https://doi.org/10.1038/s41467-017-00623-3
+This code contains the neural network implementation from the nature communication publication https://doi.org/10.1038/s41467-017-00623-3 .
+A video showing the cell cycle reconstruction is available at: https://www.youtube.com/watch?v=eyWcHIiCazE
 
 ## Access the data
 The data will be shortly hosted at https://data.broadinstitute.org/bbbc/.
