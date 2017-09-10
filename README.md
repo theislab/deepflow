@@ -1,8 +1,8 @@
 # Reconstructing cell cycle and disease progression using deep learning
-This code contains the neural network implementation from the nature communication manuscript NCOMMS-16-25447A.
+This code contains the neural network implementation from the nature communication publication https://doi.org/10.1038/s41467-017-00623-3
 
 ## Access the data
-The data is hosted at https://data.broadinstitute.org/bbbc/.
+The data will be shortly hosted at https://data.broadinstitute.org/bbbc/.
 
 ## Running the code.
 To reproduce the results from the publication, change the PATH2MXNET variable in generate_record_files.sh to your mxnet home folder and run:
