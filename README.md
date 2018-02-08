@@ -3,7 +3,7 @@ This code contains the neural network implementation from the nature communicati
 A video showing the cell cycle reconstruction is available at: https://www.youtube.com/watch?v=eyWcHIiCazE
 
 ## Access the data
-The data will be shortly hosted at https://data.broadinstitute.org/bbbc/.
+The data will be shortly hosted at https://data.broadinstitute.org/bbbc/. In the mean time you can download the data here: https://www.dropbox.com/s/tzbhp1skpjsmfsn/CellCycle.zip?dl=0
 
 ## Running the code.
 To reproduce the results from the publication, change the PATH2MXNET variable in generate_record_files.sh to your mxnet home folder and run:
